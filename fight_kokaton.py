@@ -168,7 +168,7 @@ class Explosion:
 
 
 
-class score:
+class Score:
     """
     スコア表示に関するクラス
     """
@@ -203,7 +203,7 @@ def main():
     explosions = []  # 爆発エフェクトのリスト
     #beam = None  # ゲーム初期化時にはビームは存在しない
     beams = []  # ビームのリスト
-    score_obj = score()
+    score_obj = Score()
     clock = pg.time.Clock()
     tmr = 0
     while True:
