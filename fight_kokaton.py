@@ -141,6 +141,33 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Explosion:
+    """
+    爆発エフェクトに関するクラス
+    """
+    def __init__(self, center: tuple[int, int]):
+        """
+        爆発エフェクトSurfaceを生成する
+        """
+        self.gif = pg.image.load("fig/explosion.gif")
+        self.gifs = [pg.transform.flip(self.gif, True, False), 
+                    pg.transform.flip(self.gif, False, True),
+                    pg.transform.flip(self.gif, True, True),
+                    self.gif
+                    ]  # 上下左右flipしたGIFと元のGIFをリストに格納
+        self.rct = self.gif.get_rect()
+        self.rct.center = center
+        self.life = 30
+    def update(self, screen: pg.Surface):
+        """
+        爆発エフェクトを画面に表示し、寿命を減らす
+        """
+        if self.life > 0:
+            screen.blit(self.gifs[self.life % 4], self.rct)  # 寿命に応じてGIFを切り替えて表示
+            self.life -= 1
+
+
+
 class score:
     """
     スコア表示に関するクラス
@@ -173,6 +200,7 @@ def main():
     bird = Bird((300, 200))
     #bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
+    explosions = []  # 爆発エフェクトのリスト
     #beam = None  # ゲーム初期化時にはビームは存在しない
     beams = []  # ビームのリスト
     score_obj = score()
@@ -203,8 +231,8 @@ def main():
                 if beam is not None and beam.rct.colliderect(bomb.rct):
                     beams[j] = None
                     bombs[i] = None
+                    explosions.append(Explosion(bomb.rct.center))  # 爆発エフェクトを生成
                     bird.change_img(6, screen)
-                    pg.display.update()
                     score_obj.update(screen, score_obj.score + 1) 
                     #time.sleep(1)
 
@@ -218,6 +246,9 @@ def main():
                 beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
+        for explosion in explosions:
+            explosion.update(screen)
+        explosions = [explosion for explosion in explosions if explosion.life > 0]
         score_obj.update(screen, score_obj.score)
         pg.display.update()
         tmr += 1
