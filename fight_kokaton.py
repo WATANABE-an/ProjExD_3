@@ -173,7 +173,7 @@ def main():
                 if beam.rct.colliderect(bomb.rct):
                     beam = None
                     bombs[i] = None
-                    bird.change_img(6, screen) 
+                    bird.change_img(6, screen)
                     pg.display.update()
                     time.sleep(1)
 
